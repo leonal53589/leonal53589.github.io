@@ -1,0 +1,170 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconX from "@/assets/icons/IconX.svg";
+import { stripBase, stripLocale } from "@/utils/withBase";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+const { site, features } = config;
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+
+// 去掉 base 前缀，保证部署到子目录时高亮判断依然正确
+const relativePath = stripBase(Astro.url.pathname);
+const pathWithoutTrailingSlash =
+  relativePath.endsWith("/") && relativePath !== "/"
+    ? relativePath.slice(0, -1)
+    : relativePath;
+const currentPath = stripLocale(pathWithoutTrailingSlash, locale);
+
+const home = getRelativeLocaleUrl(locale, "");
+const url = (path: string) => getRelativeLocaleUrl(locale, path);
+
+const isActive = (path: string) => {
+  const a = currentPath.split("/").filter(Boolean);
+  const b = path.split("/").filter(Boolean);
+  return b.length === 0 ? a.length === 0 : a[0] === b[0];
+};
+
+const navItems = [
+  { href: home, label: t.nav.home, match: "" },
+  { href: `${home}#experience`, label: "经历", match: null },
+  { href: `${home}#projects`, label: "项目", match: null },
+  { href: url("posts"), label: t.nav.posts, match: "posts" },
+  { href: url("about"), label: t.nav.about, match: "about" },
+];
+---
+
+<a id="skip-to-content" href="#main-content" class="skip-to-content">
+  {t.a11y.skipToContent}
+</a>
+
+<header id="site-header" class="site-header">
+  <div class="header-inner">
+    <a class="brand" href={home}>
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span>{site.title}</span>
+    </a>
+
+    <nav aria-label="主导航">
+      <ul id="nav-list" class="nav-list">
+        {
+          navItems.map(item => (
+            <li>
+              <a
+                class:list={[
+                  "nav-link",
+                  { active: item.match !== null && isActive(item.match) },
+                ]}
+                href={item.href}
+                aria-current={
+                  item.match !== null && isActive(item.match) ? "page" : undefined
+                }
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li class="nav-tools">
+          {
+            features.search !== false && (
+              <a
+                class="icon-btn"
+                href={url("search")}
+                title={t.nav.search}
+                aria-label={t.nav.search}
+              >
+                <IconSearch />
+              </a>
+            )
+          }
+          {
+            features.lightAndDarkMode && (
+              <button
+                id="theme-btn"
+                class="icon-btn"
+                type="button"
+                title={t.a11y.toggleTheme}
+                aria-label={t.a11y.toggleTheme}
+              >
+                <IconMoon class="icon-moon" />
+                <IconSunHigh class="icon-sun" />
+              </button>
+            )
+          }
+          <button
+            id="menu-btn"
+            class="icon-btn menu-btn"
+            type="button"
+            aria-label={t.a11y.openMenu}
+            aria-expanded="false"
+            aria-controls="nav-list"
+            data-label-open={t.a11y.openMenu}
+            data-label-close={t.a11y.closeMenu}
+          >
+            <IconMenuDeep id="menu-icon" />
+            <IconX id="close-icon" class="hidden" />
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function setupMenu() {
+    const btn = document.querySelector<HTMLButtonElement>("#menu-btn");
+    const list = document.querySelector("#nav-list");
+    const openIcon = document.querySelector("#menu-icon");
+    const closeIcon = document.querySelector("#close-icon");
+    if (!btn || !list || btn.dataset.bound) return;
+    btn.dataset.bound = "1";
+
+    const openLabel = btn.dataset.labelOpen ?? "Open menu";
+    const closeLabel = btn.dataset.labelClose ?? "Close menu";
+
+    btn.addEventListener("click", () => {
+      const open = list.classList.toggle("open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.setAttribute("aria-label", open ? closeLabel : openLabel);
+      openIcon?.classList.toggle("hidden", open);
+      closeIcon?.classList.toggle("hidden", !open);
+    });
+
+    list.addEventListener("click", e => {
+      if (!(e.target as HTMLElement).closest("a")) return;
+      list.classList.remove("open");
+      btn.setAttribute("aria-expanded", "false");
+      openIcon?.classList.remove("hidden");
+      closeIcon?.classList.add("hidden");
+    });
+  }
+
+  function setupSkip() {
+    const skip = document.getElementById("skip-to-content");
+    if (!skip || (skip as HTMLElement).dataset.bound) return;
+    (skip as HTMLElement).dataset.bound = "1";
+    skip.addEventListener("click", e => {
+      e.preventDefault();
+      const target = document.getElementById("main-content");
+      if (!target) return;
+      target.setAttribute("tabindex", "-1");
+      target.focus();
+      target.scrollIntoView({ behavior: "smooth" });
+    });
+  }
+
+  function setup() {
+    setupMenu();
+    setupSkip();
+  }
+
+  setup();
+  document.addEventListener("astro:after-swap", setup);
+</script>

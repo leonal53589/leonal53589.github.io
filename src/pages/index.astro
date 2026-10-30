@@ -1,0 +1,454 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Card from "@/components/Card.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import { SOCIAL_ICONS } from "@/data/icons";
+import {
+  profile,
+  about,
+  experience,
+  projects,
+  skills,
+  contact,
+} from "@/data/resume";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+
+const posts = await getCollection("posts");
+const recentPosts = getSortedPosts(posts).slice(0, config.posts.perIndex);
+
+const iconPath = (name: string) =>
+  SOCIAL_ICONS[name === "mail" ? "email" : name] ?? SOCIAL_ICONS.link;
+
+const getBadgeClass = (badge?: string) => {
+  if (!badge) return "";
+  if (badge.includes("全国一等奖") || badge.includes("金奖") || badge.includes("冠军"))
+    return "badge-honor badge-gold";
+  if (badge.includes("银奖") || badge.includes("省"))
+    return "badge-honor badge-silver";
+  return "badge-honor badge-bronze";
+};
+---
+
+<Layout>
+  <Header />
+  <main id="main-content">
+    <!-- ============ 首屏 (Hero - Perception Zone) ============ -->
+    <section id="hero" class="hero">
+      {
+        profile.status.telemetry && (
+          <div class="telemetry-strip reveal">
+            <span class="telemetry-pulse" aria-hidden="true" />
+            <span>{profile.status.telemetry}</span>
+          </div>
+        )
+      }
+
+      <div class="hero-inner">
+        <!-- 赛博自瞄 HUD 头像框 -->
+        <div class="hero-avatar-wrap reveal">
+          <div class="avatar-target-frame">
+            <span class="reticle-corner reticle-tl" aria-hidden="true" />
+            <span class="reticle-corner reticle-tr" aria-hidden="true" />
+            <span class="reticle-corner reticle-bl" aria-hidden="true" />
+            <span class="reticle-corner reticle-br" aria-hidden="true" />
+            <span class="reticle-tag" aria-hidden="true">TARGET: LOCKED</span>
+
+            <div class="avatar-halo" aria-hidden="true" />
+            <div class="avatar-ring">
+              <img
+                src={profile.avatar}
+                alt={`${profile.name} 的虚拟头像`}
+                width="200"
+                height="200"
+                loading="eager"
+              />
+            </div>
+          </div>
+
+          {
+            profile.status.available && (
+              <span class="status-chip">{profile.status.text}</span>
+            )
+          }
+        </div>
+
+        <div class="hero-copy">
+          <p class="hero-hello reveal">{profile.location}</p>
+          <h1 class="hero-name reveal">{profile.name}</h1>
+          <p class="hero-name-en reveal">{profile.latinName}</p>
+          <p class="hero-headline reveal">{profile.headline}</p>
+          <p class="hero-tagline reveal">「{profile.tagline}」</p>
+
+          <ul class="socials reveal">
+            {
+              profile.socials.map(s => (
+                <li>
+                  <a
+                    class="social-pill"
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={s.label}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d={iconPath(s.icon)} />
+                    </svg>
+                    <span>{s.label}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+
+          <div class="hero-actions reveal">
+            {
+              profile.actions.map(a => (
+                <a
+                  class:list={["btn", { "btn-primary": a.primary }]}
+                  href={a.href}
+                >
+                  {a.label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心战绩数据带 -->
+      <dl class="stats reveal">
+        {
+          profile.stats.map(s => (
+            <div class="stat">
+              <dt>{s.value}</dt>
+              <dd>{s.label}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <a class="hero-scroll" href="#about" aria-label="向下滚动查看具身探索">
+        <span>SCROLL</span>
+        <span class="hero-scroll-line" aria-hidden="true" />
+      </a>
+    </section>
+
+    <!-- ============ 关于我与具身探索 (Bento Grid) ============ -->
+    <section id="about" class="home-section">
+      <div class="home-wrap">
+        <header class="section-head reveal">
+          <p class="section-index">{about.index}</p>
+          <h2 class="section-title">{about.title}</h2>
+          <p class="section-sub">{about.subtitle}</p>
+        </header>
+
+        <div class="bento-grid">
+          <!-- 主理念与探索宣言卡片 -->
+          <div class="bento-card-main glass reveal">
+            {
+              about.quote && (
+                <div class="bento-quote-box">
+                  <p class="bento-quote">「{about.quote}」</p>
+                </div>
+              )
+            }
+            <div class="bento-prose">
+              {about.paragraphs.map(p => <p>{p}</p>)}
+            </div>
+          </div>
+
+          <!-- 具身探索三大支柱 -->
+          {
+            about.focusAreas?.map(f => (
+              <div class="bento-pillar glass reveal">
+                <span class="pillar-tag">{f.tag}</span>
+                <h3>{f.title}</h3>
+                <p>{f.desc}</p>
+              </div>
+            ))
+          }
+
+          <!-- 核心优势卡片 -->
+          {
+            about.highlights.map(h => (
+              <div class="bento-strength glass reveal">
+                <h3>{h.title}</h3>
+                <p>{h.text}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 核心项目与工程展台 (Flagship Showcase) ============ -->
+    <section id="projects" class="home-section alt">
+      <div class="home-wrap">
+        <header class="section-head reveal">
+          <p class="section-index">{projects.index}</p>
+          <h2 class="section-title">{projects.title}</h2>
+          <p class="section-sub">{projects.subtitle}</p>
+        </header>
+
+        {
+          projects.items.map(p => (
+            <div class="flagship-showcase glass reveal">
+              <div class="showcase-header">
+                <div class="showcase-title-wrap">
+                  <span class="showcase-badge">FEATURED</span>
+                  <h3 class="showcase-title">{p.name}</h3>
+                </div>
+                {p.period && <span class="showcase-period">{p.period}</span>}
+              </div>
+
+              <p class="showcase-summary">{p.summary}</p>
+              {p.description && <p class="showcase-desc">{p.description}</p>}
+
+              {/* 算法全链路流程视窗 */}
+              {p.architecture && p.architecture.length > 0 && (
+                <div class="pipeline-box">
+                  <div class="pipeline-label">
+                    <span>▶ 算法架构链路 (Pipeline Architecture)</span>
+                  </div>
+                  <ol class="pipeline-steps">
+                    {p.architecture.map((step, idx, arr) => (
+                      <>
+                        <li class="pipeline-step">
+                          <span style="color:var(--accent);margin-right:6px;">0{idx + 1}</span>
+                          {step}
+                        </li>
+                        {idx < arr.length - 1 && (
+                          <span class="pipeline-arrow" aria-hidden="true">→</span>
+                        )}
+                      </>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* 实战指标与关键表现 */}
+              {p.metrics && p.metrics.length > 0 && (
+                <div class="metrics-row">
+                  {p.metrics.map(m => (
+                    <div class="metric-chip">
+                      <span class="metric-label">{m.label}</span>
+                      <span class="metric-val">{m.value}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div class="showcase-footer">
+                {p.tags && p.tags.length > 0 && (
+                  <ul class="tags-list">
+                    {p.tags.map(tag => <li>{tag}</li>)}
+                  </ul>
+                )}
+
+                {p.links?.map(l => (
+                  <a
+                    class="showcase-link"
+                    href={l.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>{l.label}</span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ============ 经历与荣誉 (Cyber Timeline) ============ -->
+    <section id="experience" class="home-section">
+      <div class="home-wrap">
+        <header class="section-head reveal">
+          <p class="section-index">{experience.index}</p>
+          <h2 class="section-title">{experience.title}</h2>
+          <p class="section-sub">{experience.subtitle}</p>
+        </header>
+
+        <ol class="timeline">
+          {
+            experience.items.map(it => (
+              <li class="timeline-item reveal">
+                <span class="timeline-dot" aria-hidden="true" />
+                <div class="timeline-card glass">
+                  <div class="timeline-top">
+                    <span class="chip-kind">{it.kind}</span>
+                    {it.badge && (
+                      <span class={getBadgeClass(it.badge)}>{it.badge}</span>
+                    )}
+                    <span class="period">{it.period}</span>
+                  </div>
+                  <h3 class="timeline-title">{it.title}</h3>
+                  <p class="timeline-org">
+                    {it.org}
+                    {it.location ? ` · ${it.location}` : ""}
+                  </p>
+                  {it.description && <p class="timeline-desc">{it.description}</p>}
+                  {it.highlights?.length ? (
+                    <ul class="bullets">
+                      {it.highlights.map(h => <li>{h}</li>)}
+                    </ul>
+                  ) : null}
+                  {it.tags?.length ? (
+                    <ul class="tags-list">
+                      {it.tags.map(tag => <li>{tag}</li>)}
+                    </ul>
+                  ) : null}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ 技能矩阵 (Capability Matrix) ============ -->
+    <section id="skills" class="home-section alt">
+      <div class="home-wrap">
+        <header class="section-head reveal">
+          <p class="section-index">{skills.index}</p>
+          <h2 class="section-title">{skills.title}</h2>
+          <p class="section-sub">{skills.subtitle}</p>
+        </header>
+
+        <ul class="skill-groups">
+          {
+            skills.groups.map(g => (
+              <li class="skill-group glass reveal">
+                <h3>{g.category}</h3>
+                <ul class="chip-list">
+                  {g.items.map(i => (
+                    <li>{i.name}</li>
+                  ))}
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 联系我 (Cyber Terminal) ============ -->
+    <section id="contact" class="home-section">
+      <div class="home-wrap">
+        <header class="section-head reveal">
+          <p class="section-index">{contact.index}</p>
+          <h2 class="section-title">{contact.title}</h2>
+          <p class="section-sub">{contact.subtitle}</p>
+        </header>
+
+        <div class="contact-terminal glass reveal">
+          <div class="terminal-bar">
+            <span class="term-dot term-red" aria-hidden="true" />
+            <span class="term-dot term-yellow" aria-hidden="true" />
+            <span class="term-dot term-green" aria-hidden="true" />
+            <span class="term-title">leona@szu-robotics:~$ contact --all</span>
+          </div>
+
+          <div class="contact-body">
+            <ul class="contact-list">
+              {
+                contact.items.map(item => (
+                  <li class="contact-row">
+                    <span class="contact-label">{item.label}</span>
+                    {item.href ? (
+                      <a class="contact-value" href={item.href}>
+                        {item.value}
+                      </a>
+                    ) : (
+                      <span class="contact-value">{item.value}</span>
+                    )}
+                    {item.copy === false ? null : (
+                      <button
+                        class="copy-btn"
+                        type="button"
+                        data-copy={item.value}
+                      >
+                        复制
+                      </button>
+                    )}
+                  </li>
+                ))
+              }
+            </ul>
+
+            <ul class="socials contact-socials">
+              {
+                contact.socials.map(s => (
+                  <li>
+                    <a
+                      class="social-pill"
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path d={iconPath(s.icon)} />
+                      </svg>
+                      <span>{s.label}</span>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 近期文章（若无文章则不显示） ============ -->
+    {
+      recentPosts.length > 0 && (
+        <section id="posts" class="home-section alt">
+          <div class="home-wrap">
+            <header class="section-head reveal">
+              <p class="section-index">06</p>
+              <h2 class="section-title">{t.home.recentPosts}</h2>
+            </header>
+            <ul>
+              {recentPosts.map(post => (
+                <Card variant="h3" {...post} />
+              ))}
+            </ul>
+            <div class="mt-8 text-center">
+              <LinkButton href={getRelativeLocaleUrl(locale, "posts")}>
+                {t.home.allPosts}
+                <IconArrowRight class="inline-block" />
+              </LinkButton>
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </main>
+  <Footer />
+</Layout>

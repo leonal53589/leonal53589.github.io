@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>个人主页</title>
+  <meta name="description" id="meta-description" content="个人主页" />
+  <meta name="theme-color" content="#0a0b10" />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/img/avatar-256.jpg" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <meta property="og:type" content="profile" />
+  <meta property="og:title" id="og-title" content="个人主页" />
+  <meta property="og:description" id="og-description" content="个人主页" />
+  <meta property="og:image" id="og-image" content="assets/img/og.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" id="twitter-title" content="个人主页" />
+  <meta name="twitter:description" id="twitter-description" content="个人主页" />
+  <meta name="twitter:image" id="twitter-image" content="assets/img/og.jpg" />
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <!-- ============ 背景层：壁纸 + 极光 + 网格 ============ -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg-image" id="bg-image"></div>
+    <div class="bg-aurora">
+      <span class="blob blob-1"></span>
+      <span class="blob blob-2"></span>
+      <span class="blob blob-3"></span>
+    </div>
+    <div class="bg-grid"></div>
+    <div class="bg-noise"></div>
+    <div class="bg-scrim"></div>
+  </div>
+
+  <!-- 跟随鼠标的光晕（仅桌面端指针设备启用） -->
+  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+
+  <div class="demo-banner" id="demo-banner" hidden>
+    <span>当前显示的是<strong>示例内容</strong>，请编辑 <code>data/content.js</code> 替换成你自己的信息</span>
+    <button class="demo-close" id="demo-close" type="button" aria-label="关闭提示">&times;</button>
+  </div>
+
+  <div class="progress-bar" id="progress-bar" aria-hidden="true"></div>
+
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span id="brand-name">个人主页</span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="站点导航"></nav>
+
+      <div class="header-tools">
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式">
+          <span class="icon-btn-inner" id="theme-icon"></span>
+        </button>
+        <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-label="展开导航" aria-expanded="false">
+          <span class="icon-btn-inner" id="nav-icon"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <span id="top"></span>
+
+    <!-- ============ 首屏 ============ -->
+    <section class="hero" id="hero">
+      <div class="wrap hero-inner">
+        <div class="hero-avatar-wrap reveal">
+          <div class="avatar-halo" aria-hidden="true"></div>
+          <div class="avatar-ring">
+            <img class="avatar" id="hero-avatar" src="assets/img/avatar.svg" alt="" width="200" height="200" />
+          </div>
+          <span class="status-chip" id="hero-status" hidden></span>
+        </div>
+
+        <div class="hero-copy">
+          <p class="hero-hello reveal" id="hero-hello"></p>
+          <h1 class="hero-name reveal" id="hero-name"></h1>
+          <p class="hero-name-en reveal" id="hero-name-en"></p>
+          <p class="hero-headline reveal" id="hero-headline"></p>
+          <p class="hero-tagline reveal" id="hero-tagline"></p>
+          <ul class="socials reveal" id="hero-socials"></ul>
+          <div class="hero-actions reveal" id="hero-actions"></div>
+        </div>
+      </div>
+
+      <dl class="stats reveal" id="hero-stats"></dl>
+
+      <a class="hero-scroll" href="#about" aria-label="向下滚动">
+        <span class="hero-scroll-text">SCROLL</span>
+        <span class="hero-scroll-line" aria-hidden="true"></span>
+      </a>
+    </section>
+
+    <!-- 以下板块由 assets/js/main.js 根据 data/content.js 渲染 -->
+    <section class="section" id="about" hidden></section>
+    <section class="section" id="experience" hidden></section>
+    <section class="section alt" id="projects" hidden></section>
+    <section class="section" id="skills" hidden></section>
+    <section class="section alt" id="contact" hidden></section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p id="footer-copy"></p>
+      <p class="footer-extra" id="footer-icp" hidden></p>
+      <p class="footer-built">
+        静态站点 · 内容在 <code>data/content.js</code> · <a href="#top">回到顶部 ↑</a>
+      </p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript>
+    <div class="wrap noscript">这个页面需要 JavaScript 才能渲染内容，请在浏览器设置中开启。</div>
+  </noscript>
+
+  <script src="data/content.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

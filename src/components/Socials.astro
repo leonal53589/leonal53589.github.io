@@ -1,0 +1,52 @@
+---
+import config from "@/config";
+import { SOCIAL_ICONS } from "@/data/icons";
+
+const { site, socials } = config;
+
+// config 里写 "mail"，图标表里是 "email"
+const iconKey = (name: string) => (name === "mail" ? "email" : name);
+
+const items = socials.map(({ name, url, linkTitle }) => {
+  const path = SOCIAL_ICONS[iconKey(name)];
+  const isMail = url.startsWith("mailto:");
+  const title =
+    linkTitle ?? (isMail ? `给 ${site.title} 发邮件` : `${site.title} 的 ${name}`);
+  return { url, title, path, isMail };
+});
+---
+
+<div class="flex flex-wrap items-center gap-2">
+  {
+    items.map(({ url, title, path, isMail }) =>
+      path ? (
+        <a
+          href={url}
+          class="social-pill"
+          title={title}
+          aria-label={title}
+          target={isMail ? undefined : "_blank"}
+          rel={isMail ? undefined : "noopener noreferrer"}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d={path} />
+          </svg>
+          <span class="social-pill-label">{title.split(" 的 ").pop()}</span>
+        </a>
+      ) : null
+    )
+  }
+</div>
+
+<style>
+  /* 首页/页脚共用：默认只显示图标，在首页首屏由 .socials 显示文字 */
+  .social-pill-label {
+    display: none;
+  }
+</style>

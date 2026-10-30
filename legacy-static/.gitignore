@@ -1,0 +1,14 @@
+# 预览截图 / 临时产物
+.preview/
+.ref/
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/
+.idea/
+*.swp

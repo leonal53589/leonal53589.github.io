@@ -1,0 +1,120 @@
+/* Register design tokens for Tailwind v4 */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --font-app: var(--font-app-stack);
+}
+
+/* ------------------------------------------------------------
+ * 字体：系统字体栈 + 等宽代码字体
+ * ---------------------------------------------------------- */
+:root {
+  --font-app-stack: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+    system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+}
+
+/* ------------------------------------------------------------
+ * 尺寸 / 动效（两个主题共用）
+ * ---------------------------------------------------------- */
+:root {
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --glass: 20px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur: 0.35s;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 24px -14px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 3px 8px rgba(0, 0, 0, 0.07), 0 20px 42px -20px rgba(0, 0, 0, 0.18);
+  --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.08), 0 32px 64px -28px rgba(0, 0, 0, 0.28);
+}
+
+/* Light theme values（科技浅色实验室风格） */
+:root,
+[data-theme="light"] {
+  --background: #f3f6fc;
+  --foreground: #090e1a;
+  --accent: #0284c7;
+  --accent-foreground: #ffffff;
+  --muted: #e5edf8;
+  --muted-foreground: rgba(9, 14, 26, 0.68);
+  --border: rgba(9, 14, 26, 0.1);
+
+  /* 首页视觉层 */
+  --accent-2: #4f46e5;
+  --accent-rgb: 2, 132, 199;
+  --accent-2-rgb: 79, 70, 229;
+  --text-2: rgba(9, 14, 26, 0.72);
+  --text-3: rgba(9, 14, 26, 0.48);
+  --border-2: rgba(2, 132, 199, 0.26);
+  --card: rgba(255, 255, 255, 0.82);
+  --card-hover: rgba(255, 255, 255, 0.96);
+
+  --grid-line: rgba(2, 132, 199, 0.06);
+  --noise-opacity: 0.02;
+  --blob-opacity: 0.25;
+  --blob-blend: multiply;
+  --bg-img-opacity: 0.35;
+  --text-shadow: rgba(243, 246, 252, 0.8);
+
+  --scrim: linear-gradient(
+    180deg,
+    rgba(243, 246, 252, 0) 0%,
+    rgba(243, 246, 252, 0.2) 20%,
+    rgba(243, 246, 252, 0.6) 48%,
+    rgba(243, 246, 252, 0.88) 72%,
+    #f3f6fc 94%
+  );
+  --scrim-radial: rgba(243, 246, 252, 0.6);
+}
+
+/* Dark theme values（赛博具身智能 / 机器人激光雷达深色系） */
+[data-theme="dark"] {
+  --background: #080c16;
+  --foreground: #f1f5fb;
+  --accent: #00f0ff;
+  --accent-foreground: #080c16;
+  --muted: #0d1424;
+  --muted-foreground: rgba(241, 245, 251, 0.66);
+  --border: rgba(0, 240, 255, 0.12);
+
+  --accent-2: #3b82f6;
+  --accent-rgb: 0, 240, 255;
+  --accent-2-rgb: 59, 130, 246;
+  --text-2: rgba(241, 245, 251, 0.68);
+  --text-3: rgba(241, 245, 251, 0.42);
+  --border-2: rgba(0, 240, 255, 0.3);
+  --card: rgba(13, 19, 35, 0.72);
+  --card-hover: rgba(18, 28, 52, 0.88);
+
+  --grid-line: rgba(0, 240, 255, 0.06);
+  --noise-opacity: 0.038;
+  --blob-opacity: 0.38;
+  --blob-blend: screen;
+  --bg-img-opacity: 0.6;
+  --text-shadow: rgba(8, 12, 22, 0.85);
+
+  --scrim: linear-gradient(
+    180deg,
+    rgba(8, 12, 22, 0) 0%,
+    rgba(8, 12, 22, 0.22) 20%,
+    rgba(8, 12, 22, 0.58) 48%,
+    rgba(8, 12, 22, 0.88) 72%,
+    #080c16 94%
+  );
+  --scrim-radial: rgba(8, 12, 22, 0.68);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6), 0 12px 28px -14px rgba(0, 0, 0, 0.9);
+  --shadow-md: 0 3px 10px rgba(0, 0, 0, 0.7), 0 24px 50px -22px rgba(0, 0, 0, 0.95);
+  --shadow-lg: 0 6px 18px rgba(0, 0, 0, 0.8), 0 40px 80px -30px rgba(0, 0, 0, 1);
+}

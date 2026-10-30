@@ -1,0 +1,26 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Socials from "./Socials.astro";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+type Props = {
+  noMarginTop?: boolean;
+} & HTMLAttributes<"footer">;
+
+const { noMarginTop = false, class: className, ...attrs } = Astro.props;
+
+const t = useTranslations(Astro.currentLocale);
+const currentYear = new Date().getFullYear();
+---
+
+<footer class:list={["site-footer", className]} {...attrs}>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-copy">
+        {t.footer.copyright} &#169; {currentYear} {config.site.author} · 计算机科学与技术 / 具身智能
+      </p>
+    </div>
+    <Socials />
+  </div>
+</footer>
